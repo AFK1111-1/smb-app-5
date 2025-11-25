@@ -471,49 +471,48 @@ jobs:
     name: build-and-release
     steps:
       - name: 'Run :: Start'
-        run: |2-
-              echo " Starting GitHub Action!" && 
-              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
-              
+        run: >-
+          echo " Starting GitHub Action!" && echo "STEPS_CAN_PROCEED=true" >>
+          $GITHUB_ENV
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: 'Run :: Checkout Specific Commit'
-        env:
-          COMMIT_ID: ${{ github.event.client_payload.commitId }}
-          BRANCH_NAME: ${{ github.event.client_payload.branchName }}
+        run: |-
+          echo "Starting the checkout process..."
+          git fetch --all
+          if [ -n "$COMMIT_ID" ]; then
+            echo "Commit ID provided: $COMMIT_ID"
+            git checkout $COMMIT_ID || true
+            echo "Checked out to commit ID: $COMMIT_ID"
+          elif [ -n "$BRANCH_NAME" ]; then
+            echo "Branch name provided: $BRANCH_NAME"
+            git checkout $BRANCH_NAME || true
+            echo "Checked out to branch: $BRANCH_NAME"
+            ACTUAL_COMMIT_ID=$(git rev-parse HEAD)
+            echo "Changing CommitId: $ACTUAL_COMMIT_ID"
+            echo "COMMIT_ID=$ACTUAL_COMMIT_ID" >> $GITHUB_ENV
+          else
+            echo "Skipping checkout..."
+          fi
         if: >-
           ${{ github.event.client_payload.commitId != null ||
           github.event.client_payload.branchName != null }}
-        run: |2-
-              echo "Starting the checkout process..."
-              git fetch --all
-              if [ -n "$COMMIT_ID" ]; then
-                echo "Commit ID provided: $COMMIT_ID"
-                git checkout $COMMIT_ID || true
-                echo "Checked out to commit ID: $COMMIT_ID"
-              elif [ -n "$BRANCH_NAME" ]; then
-                echo "Branch name provided: $BRANCH_NAME"
-                git checkout $BRANCH_NAME || true
-                echo "Checked out to branch: $BRANCH_NAME"
-                #Updating the commit Id
-                ACTUAL_COMMIT_ID=$(git rev-parse HEAD)
-                echo "Changing CommitId: $ACTUAL_COMMIT_ID"
-                echo "COMMIT_ID=$ACTUAL_COMMIT_ID" >> $GITHUB_ENV
-              else
-                echo "Skipping checkout..."
-              fi
-            
+        env:
+          COMMIT_ID: ${{ github.event.client_payload.commitId }}
+          BRANCH_NAME: ${{ github.event.client_payload.branchName }}
       - name: 'Run :: Decoding Secrets'
-        run: |2-
-                if [ ! -x "$(command -v jq)" ]; then
-                  echo "jq not found, installing..."
-                  sudo apt-get update
-                  sudo apt-get install -y jq
-                fi
-                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
+        run: >-
+          if [ ! -x "$(command -v jq)" ]; then
+            echo "jq not found, installing..."
+            sudo apt-get update
+            sudo apt-get install -y jq
+          fi
+
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
+          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -546,8 +545,9 @@ jobs:
           echo "${{ env.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode >
           credentials/android/release.keystore
       - name: Setup Google Play Service Key
-        run: |
-          echo "$GOOGLE_PLAY_SERVICE_KEY" | base64 --decode > credentials/android/google-play-service-key.json
+        run: >
+          echo "$GOOGLE_PLAY_SERVICE_KEY" | base64 --decode >
+          credentials/android/google-play-service-key.json
       - name: Setup Google Services JSON for Android
         run: >
           echo "${{ env.ANDROID_GOOGLE_SERVICES_JSON }}" | base64 --decode >
@@ -563,17 +563,16 @@ jobs:
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: '30'
       - name: Setup Apple API Key
-        run: |
-          base64_content=$(echo "$APP_STORE_CONNECT_API_KEY_BASE64" | \
-            sed 's/-----BEGIN PRIVATE KEY-----//g' | \
-            sed 's/-----END PRIVATE KEY-----//g' | \
-            tr -d ' \n\r\t')
-          
+        run: >
+          base64_content=$(echo "$APP_STORE_CONNECT_API_KEY_BASE64" | sed
+          's/-----BEGIN PRIVATE KEY-----//g' | sed 's/-----END PRIVATE
+          KEY-----//g' | tr -d ' \n\r\t')
+
           echo "-----BEGIN PRIVATE KEY-----" > credentials/ios/AuthKey.p8
+
           echo "$base64_content" | fold -w 64 >> credentials/ios/AuthKey.p8
+
           echo "-----END PRIVATE KEY-----" >> credentials/ios/AuthKey.p8
-        env:
-          APP_STORE_CONNECT_API_KEY_BASE64: ${{ env.APP_STORE_CONNECT_API_KEY_BASE64 }}
       - name: Setup Google Service Info Plist for iOS
         run: >
           echo "${{ env.IOS_GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode >
@@ -586,23 +585,29 @@ jobs:
           pod install
           cd ..
       - name: Setup SSH for Fastlane Match
-        run: |
+        run: >
           mkdir -p ~/.ssh
-          if echo "$FASTLANE_MATCH_DEPLOY_KEY" | head -c 5 | grep -q "^-----"; then
-            echo "$FASTLANE_MATCH_DEPLOY_KEY" > ~/.ssh/id_rsa
+
+          if echo "$FASTLANE_MATCH_DEPLOY_KEY" | head -c 5 | grep -q "^-----";
+          then
+
+          echo "$FASTLANE_MATCH_DEPLOY_KEY" > ~/.ssh/id_rsa
+
           else
-            echo "$FASTLANE_MATCH_DEPLOY_KEY" | base64 --decode > ~/.ssh/id_rsa
+
+          echo "$FASTLANE_MATCH_DEPLOY_KEY" | base64 --decode > ~/.ssh/id_rsa
+
           fi
+
           chmod 600 ~/.ssh/id_rsa
+
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-        env:
-          FASTLANE_MATCH_DEPLOY_KEY: ${{ env.FASTLANE_MATCH_DEPLOY_KEY }}
       - name: Setup Xcode 16.1
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '16.1'
       - name: Setup Xcode First Launch and Install iOS 18.1 Runtime
-        run: |
+        run: |-
           sudo xcodebuild -runFirstLaunch
           sudo xcodebuild -license accept || echo "License already accepted"
           xcrun simctl list runtimes | grep iOS || echo "No iOS runtimes found"
@@ -611,53 +616,56 @@ jobs:
           wait $DOWNLOAD_PID || echo "Download process finished"
           sleep 30
           xcrun simctl list runtimes | grep iOS || echo "No iOS runtimes found"
-          
       - name: Create temporary keychain
-        run: |
+        run: >
           KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
+
           KEYCHAIN_NAME="build.keychain"
+
           echo "KEYCHAIN_PASSWORD=$KEYCHAIN_PASSWORD" >> $GITHUB_ENV
+
           echo "KEYCHAIN_NAME=$KEYCHAIN_NAME" >> $GITHUB_ENV
+
           security delete-keychain "$KEYCHAIN_NAME" 2>/dev/null || true
+
           security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
-          EXISTING_KEYCHAINS=$(security list-keychains -d user | tr -d '"' | tr '\n' ' ')
-          security list-keychains -d user -s "$KEYCHAIN_NAME" $EXISTING_KEYCHAINS
+
+          EXISTING_KEYCHAINS=$(security list-keychains -d user | tr -d '"' | tr
+          '\n' ' ')
+
+          security list-keychains -d user -s "$KEYCHAIN_NAME"
+          $EXISTING_KEYCHAINS
+
           security default-keychain -s "$KEYCHAIN_NAME"
+
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+
           security set-keychain-settings -t 3600 -u "$KEYCHAIN_NAME"
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME" 2>/dev/null || true
+
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k
+          "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME" 2>/dev/null || true
       - name: Unlock keychain
-        run: |
-          security unlock-keychain -p "${{ env.KEYCHAIN_PASSWORD }}" "${{ env.KEYCHAIN_NAME }}"
+        run: >-
+          security unlock-keychain -p "${{ env.KEYCHAIN_PASSWORD }}" "${{
+          env.KEYCHAIN_NAME }}"
       - name: Build and Release iOS
         run: fastlane ios qa_release
-        env:
-          APP_STORE_CONNECT_API_KEY_ID: ${{ env.APP_STORE_CONNECT_API_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ env.APP_STORE_CONNECT_ISSUER_ID }}
-          MATCH_PASSWORD: ${{ env.MATCH_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ env.KEYCHAIN_PASSWORD }}
-          KEYCHAIN_NAME: ${{ env.KEYCHAIN_NAME }}
-          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
-          FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 6
-      
       - name: Cleanup keychain
-        if: always()
-        run: |
-          security delete-keychain "${{ env.KEYCHAIN_NAME }}" 2>/dev/null || true
+        run: >
+          security delete-keychain "${{ env.KEYCHAIN_NAME }}" 2>/dev/null ||
+          true
       - name: Upload iOS Release IPA
         uses: actions/upload-artifact@v4
         with:
           name: ios-release-ipa
           path: ios/build/smbmobile.ipa
           retention-days: '30'
-      
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           body: |
             ## QA Release v${{ github.run_number }}
             ### 📱 Build Artifacts
-            - **🤖 Android AAB**: Download from Actions tab
             - **🍎 iOS IPA**: Download from Actions tab
             ### 📋 Build Details
             - **Commit**: ${{ github.sha }}
@@ -665,13 +673,60 @@ jobs:
             - **Build Number**: ${{ github.run_number }}
             - **Xcode**: 16.1 with iOS 18.1 runtime
             ### 🚀 Deployment
-            - Android: Internal track on Google Play
             - iOS: TestFlight
+          name: QA Release v${{ github.run_number }}
           draft: false
+          token: ${{ env.GITHUB_TOKEN }}
           tag_name: qa-v${{ github.run_number }}
           prerelease: true
-          name: QA Release v${{ github.run_number }}
-          token: ${{ env.GITHUB_TOKEN }}
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Start'
+        run: |2-
+
+              echo " Starting GitHub Action!" && 
+              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+              
+      - name: 'Run :: Checkout repository'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 'Run :: Checkout Specific Commit'
+        env:
+          COMMIT_ID: ${{ github.event.client_payload.commitId }}
+          BRANCH_NAME: ${{ github.event.client_payload.branchName }}
+        if: >-
+          ${{ github.event.client_payload.commitId != null ||
+          github.event.client_payload.branchName != null }}
+        run: |2-
+
+              echo "Starting the checkout process..."
+              git fetch --all
+              if [ -n "$COMMIT_ID" ]; then
+                echo "Commit ID provided: $COMMIT_ID"
+                git checkout $COMMIT_ID || true
+                echo "Checked out to commit ID: $COMMIT_ID"
+              elif [ -n "$BRANCH_NAME" ]; then
+                echo "Branch name provided: $BRANCH_NAME"
+                git checkout $BRANCH_NAME || true
+                echo "Checked out to branch: $BRANCH_NAME"
+
+                #Updating the commit Id
+                ACTUAL_COMMIT_ID=$(git rev-parse HEAD)
+                echo "Changing CommitId: $ACTUAL_COMMIT_ID"
+                echo "COMMIT_ID=$ACTUAL_COMMIT_ID" >> $GITHUB_ENV
+              else
+                echo "Skipping checkout..."
+              fi
+            
     needs:
       - _status_testing
     permissions: write-all
