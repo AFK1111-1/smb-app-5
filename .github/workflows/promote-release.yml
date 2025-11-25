@@ -1,0 +1,127 @@
+name: Promote Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+      release_tag:
+        description: "Release tag to promote (e.g., qa-v123)"
+        required: true
+        type: string
+
+jobs:
+  promote-release:
+    runs-on: ubuntu-latest # should use macos-latest when ios builds enabled
+    name: Promote to ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Ruby and Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Install Fastlane
+        run: |
+          gem install fastlane
+          bundle install
+
+      - name: Create credentials directory
+        run: mkdir -p credentials/android
+
+      - name: Setup Android Keystore from secrets
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > credentials/android/release.keystore
+
+      - name: Setup Google Play Service Key from secrets
+        run: |
+          echo '${{ secrets.GOOGLE_PLAY_SERVICE_KEY }}' > credentials/android/google-play-service-key.json
+
+      - name: Download Android AAB
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release-aab
+          path: artifacts/android
+
+#      - name: Download iOS IPA
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: ios-release-ipa
+#          path: artifacts/ios
+
+      - name: Promote Android to Staging
+        if: github.event.inputs.environment == 'staging'
+        run: |
+          fastlane android stg_release
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Promote Android to Production
+        if: github.event.inputs.environment == 'production'
+        run: |
+          fastlane android production_release
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+#      - name: Promote iOS to Staging
+#        if: github.event.inputs.environment == 'staging'
+#        run: |
+#          fastlane ios stg_release
+#        env:
+#          FASTLANE_APPLE_API_KEY: ${{ secrets.FASTLANE_APPLE_API_KEY }}
+#
+#      - name: Promote iOS to Production
+#        if: github.event.inputs.environment == 'production'
+#        run: |
+#          fastlane ios production_release
+#        env:
+#          FASTLANE_APPLE_API_KEY: ${{ secrets.FASTLANE_APPLE_API_KEY }}
+
+      - name: Create Promotion Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.environment }}-v${{ github.run_number }}
+          release_name: ${{ github.event.inputs.environment }} Release v${{ github.run_number }}
+          body: |
+            ## ${{ github.event.inputs.environment }} Release v${{ github.run_number }}
+            
+            ### 📱 Deployment Status
+            - **🤖 Android**: Deployed to ${{ github.event.inputs.environment }}
+            - **🍎 iOS**: Deployed to ${{ github.event.inputs.environment }}
+            
+            ### 📋 Promotion Details
+            - **Source Release**: ${{ github.event.inputs.release_tag }}
+            - **Target Environment**: ${{ github.event.inputs.environment }}
+            - **Promoted by**: ${{ github.actor }}
+            - **Promotion Date**: ${{ github.event.head_commit.timestamp }}
+            
+            ### 🚀 Next Steps
+            - Monitor deployment status
+            - Verify app functionality in ${{ github.event.inputs.environment }}
+          draft: false
+          prerelease: ${{ github.event.inputs.environment != 'production' }} 

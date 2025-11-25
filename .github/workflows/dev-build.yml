@@ -1,0 +1,111 @@
+name: Dev Preview Build
+
+on:
+  workflow_dispatch:
+# Disable the pull request build considering GitHub runner cost limitations
+#  pull_request:
+#    branches: [main]
+#    types: [opened, synchronize, reopened]
+
+jobs:
+  dev-preview:
+    runs-on: ubuntu-latest # should use macos-latest when ios builds enabled
+    name: Build Dev Preview
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Install Fastlane
+        run: |
+          gem install fastlane
+          bundle install
+
+      - name: Setup environment variables
+        run: |
+          echo "KINDE_DOMAIN=${{ vars.KINDE_DOMAIN }}" >> .env
+          echo "KINDE_CLIENT_ID=${{ vars.KINDE_CLIENT_ID }}" >> .env
+          echo "KINDE_SCOPES=${{ vars.KINDE_SCOPES }}" >> .env
+          echo "PUBLIC_API_URL=${{ vars.PUBLIC_API_URL }}" >> .env
+          echo "KINDE_AUDIENCE=${{ vars.KINDE_AUDIENCE }}" >> .env
+
+      - name: Create credentials directory
+        run: mkdir -p credentials/android
+
+      - name: Setup Android Keystore from secrets
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > credentials/android/release.keystore
+
+      - name: Expo Prebuild
+        run: npm run prebuild
+
+      - name: Build Android Debug APK using Fastlane
+        run: fastlane android dev_build
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      #      - name: Build iOS Simulator App using Fastlane
+      #        run: fastlane ios dev_build
+
+      - name: Upload Android Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 7
+
+      #      - name: Upload iOS Simulator App
+      #        uses: actions/upload-artifact@v4
+      #        with:
+      #          name: ios-simulator-app
+      #          path: ios/build/Build/Products/Debug-iphonesimulator/*.app
+      #          retention-days: 7
+
+      - name: Comment PR with build artifacts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Only comment if this is a pull request
+            if (context.issue.number) {
+              const comment = `## 🚀 Dev Preview Builds
+              
+              Your preview builds are ready for testing!
+              
+              ### 📱 Download Builds
+              - **🤖 Android Debug APK**: Download from the Actions tab above
+              - **🍎 iOS Simulator App**: Download from the Actions tab above
+              
+              ### 📋 Build Details
+              - **Branch**: \`${{ github.head_ref || github.ref_name }}\`
+              - **Commit**: \`${{ github.sha }}\`
+              - **Triggered by**: PR #${{ github.event.number || 'Manual' }}
+              
+              ---
+              *Build artifacts will be available for 7 days*`;
+              
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } else {
+              console.log('Skipping PR comment - not a pull request context');
+            }

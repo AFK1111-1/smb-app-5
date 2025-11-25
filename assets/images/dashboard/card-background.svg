@@ -1,0 +1,64 @@
+<svg width="340" height="204" viewBox="0 0 340 204" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Mask for rounded rectangle card -->
+    <clipPath id="card-mask">
+      <rect x="0" y="0" width="340" height="204" rx="10" ry="10"/>
+    </clipPath>
+
+    <!-- Purple gradient for left blob -->
+    <radialGradient id="purple-blob-gradient" cx="0.3" cy="0.5" r="0.8">
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#7C3AED" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#6366F1" stop-opacity="0.5"/>
+    </radialGradient>
+
+    <!-- Blue gradient for right blob -->
+    <radialGradient id="blue-blob-gradient" cx="0.7" cy="0.4" r="0.9">
+      <stop offset="0%" stop-color="#60A5FA" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#3B82F6" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#2563EB" stop-opacity="0.4"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Group with mask applied -->
+  <g clip-path="url(#card-mask)">
+    <!-- Base card background -->
+    <rect x="0" y="0" width="340" height="204" fill="#6366F1"/>
+
+    <!-- Purple organic blob shape on the left -->
+    <path
+      d="M-50,0 Q-30,80 30,120 Q90,160 120,200 Q80,240 20,250 Q-40,260 -100,220 Q-160,180 -140,100 Q-120,20 -50,0 Z"
+      fill="url(#purple-blob-gradient)"
+      opacity="0.8"
+    />
+
+    <!-- Blue organic blob shape on the right -->
+    <path
+      d="M340,0 Q380,60 360,130 Q340,200 270,220 Q200,240 160,180 Q120,120 150,60 Q180,0 250,-20 Q320,-40 340,0 Z"
+      fill="url(#blue-blob-gradient)"
+      opacity="0.9"
+    />
+
+    <!-- Additional smaller purple accent blob -->
+    <ellipse
+      cx="80"
+      cy="140"
+      rx="90"
+      ry="120"
+      fill="url(#purple-blob-gradient)"
+      opacity="0.4"
+      transform="rotate(-20 80 140)"
+    />
+
+    <!-- Additional smaller blue accent blob -->
+    <ellipse
+      cx="290"
+      cy="100"
+      rx="110"
+      ry="140"
+      fill="url(#blue-blob-gradient)"
+      opacity="0.5"
+      transform="rotate(25 290 100)"
+    />
+  </g>
+</svg>

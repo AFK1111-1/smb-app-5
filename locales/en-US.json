@@ -1,0 +1,255 @@
+{
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome!",
+      "description": "Hello {{firstName}}, welcome to Insighture!"
+    },
+    "stayConnected": {
+      "title": "Stay Connected",
+      "description": "Get updates and stay in touch with your team seamlessly."
+    },
+    "trackProgress": {
+      "title": "Track Progress",
+      "description": "Monitor your tasks and see your achievements in real time."
+    },
+    "getStarted": {
+      "title": "Get Started",
+      "description": "Let’s set things up and explore your workspace together!"
+    },
+    "actions": {
+      "next": "Next",
+      "finish": "Finish",
+      "skip": "Skip for now"
+    }
+  },
+  "common": {
+    "comingSoon": "Coming Soon..."
+  },
+  "home": {
+    "hero": {
+      "title": "Hello {{name}},",
+      "secondaryTitle": "Welcome back"
+    },
+    "quickActions": {
+      "title": "Discover what's new at SMB",
+      "items": {
+        "designSystem": {
+          "title": "Design System",
+          "subTitle": "Customizable"
+        },
+        "workSmart": {
+          "subTitle": "Build your apps with AI",
+          "title": "Work Smart & Fast"
+        },
+        "protectMatters": {
+          "subTitle": "Builtin Protection",
+          "title": "Protect What Matters Most"
+        }
+      }
+    }
+  },
+  "search": {
+    "title": "Search Page"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "tabs": {
+      "all": "All",
+      "unread": "Unread"
+    },
+    "sections": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "older": "Older"
+    },
+    "empty": "No notifications found"
+  },
+  "profile": {
+    "title": "Profile",
+    "form": {
+      "firstName": {
+        "label": "First Name",
+        "placeholder": "Enter your first name",
+        "required": "First name is required",
+        "minLength": "First name must be at least 2 characters"
+      },
+      "lastName": {
+        "label": "Last Name",
+        "placeholder": "Enter your last name",
+        "required": "Last name is required",
+        "minLength": "Last name must be at least 2 characters"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter your email",
+        "required": "Email is required",
+        "invalid": "Please enter a valid email address"
+      },
+      "phoneNumber": {
+        "label": "Phone Number",
+        "placeholder": "Enter your phone number",
+        "required": "Phone number is required",
+        "invalid": "Please enter a valid phone number"
+      },
+      "address": {
+        "label": "Address",
+        "placeholder": "Enter your address"
+      },
+      "city": {
+        "label": "City",
+        "placeholder": "Enter your city"
+      },
+      "zipCode": {
+        "label": "Zip Code",
+        "placeholder": "Enter your zip code",
+        "invalid": "Please enter a valid zip code"
+      },
+      "actions": {
+        "save": "Save"
+      }
+    },
+    "avatar": {
+      "title": "Edit profile picture",
+      "takePhoto": "Take a photo",
+      "selectLibrary": "Upload a photo",
+      "delete": {
+        "actions": {
+          "delete": "Delete photo"
+        },
+        "success": {
+          "title": "Success",
+          "message": "Photo successfully removed"
+        },
+        "error": { "title": "Error", "message": "Failed to remove photo" },
+        "failed": "Failed to remove photo"
+      },
+      "close": "Close",
+      "camera": {
+        "permission": {
+          "title": "Permission Required",
+          "message": "Please grant camera and media permissions"
+        },
+        "cancel": "Upload cancelled"
+      },
+      "upload": {
+        "success": {
+          "title": "Success",
+          "message": "Updated photo successfully"
+        },
+        "error": {
+          "title": "Error",
+          "message": "Failed uploading photo"
+        },
+        "failed": "Upload failed",
+        "inProgress": "Uploading Photo...",
+        "pleaseWait": "Please wait"
+      }
+    },
+    "noProfile": "No user profile",
+    "noData": "No user profile data found",
+    "update": {
+      "success": {
+        "title": "Success",
+        "message": "Profile updated successfully!"
+      },
+      "error": {
+        "title": "Error",
+        "message": "Failed to update profile. Please try again."
+      }
+    },
+    "delete": {
+      "actions": { "delete": "Delete Account" },
+      "success": {
+        "title": "Success",
+        "message": "Profile updated successfully!"
+      },
+      "error": {
+        "title": "Error",
+        "message": "Failed to delete profile. User not found. Please try again."
+      }
+    }
+  },
+  "setting": {
+    "title": "Settings",
+    "items": {
+      "privacy": "Privacy",
+      "language": "Language",
+      "help": "Help",
+      "about": "About",
+      "feedback": "Send Feedback",
+      "theme": {
+        "mode": {
+          "title": "Theme Switch",
+          "darkMode": "Dark Mode"
+        },
+        "scheme": {
+          "title": "Theme Scheme",
+          "default": "Default",
+          "highContrast": "High Contrast",
+          "vibrantRed": "Vibrant Red"
+        }
+      }
+    },
+    "actions": {
+      "logout": "Logout"
+    },
+    "messages": {
+      "noEmail": "No email available",
+      "noProfile": "No user profile data available"
+    },
+    "languageSwitch": {
+      "title": "Change Language",
+      "actions": {
+        "confirm": "Continue"
+      }
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "Control how your information is used and shared with others",
+      "lastUpdate": "Last updated"
+    },
+    "help": {
+      "title": "FAQs",
+      "description": "Find answers to common questions about SMB app. If you can&apos;t find what you&apos;re looking for, feel free to contact our support team.",
+      "actions": {
+        "support": {
+          "title": "Still Need Help?",
+          "description": "If you couldn&apos;t find the answer to your question, our support team is here to help!",
+          "cta": "Contact Support"
+        }
+      }
+    },
+    "about": {
+      "title": "About",
+      "info": {
+        "title": "About Our App",
+
+        "description": "Welcome to SMB app, your trusted companion for managing your daily tasks and staying organized. We're committed to providing you with the best user experience."
+      },
+      "mission": {
+        "title": "Our Mission",
+        "description": "We strive to create innovative solutions that simplify your life and enhance productivity. Our team is dedicated to continuous improvement and delivering exceptional value to our users."
+      },
+      "items": {
+        "features": {
+          "question": "Features",
+          "answer": "Intuitive user interface with dark/light theme support\nSecure authentication and data protection\nCross-platform compatibility\nRegular updates and new features\n24/7 customer support"
+        },
+        "team": {
+          "question": "Development Team",
+          "answer": "This app is developed by a passionate team of engineers and designers who are committed to creating the best possible experience for our users."
+        },
+        "legal": {
+          "question": "Legal",
+          "answer": "© 2024 Insighture. All rights reserved. This application and its content are protected by copyright and other intellectual property laws."
+        }
+      },
+      "version": {
+        "title": "Version Information",
+        "appVersion": "App Version: {{version}}",
+        "buildNumber": "Build Number: {{number}}",
+        "releaseDate": "Release Date: {{date}}"
+      }
+    }
+  }
+}

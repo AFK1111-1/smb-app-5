@@ -1,0 +1,257 @@
+{
+  "onboarding": {
+    "welcome": {
+      "title": "Willkommen!",
+      "description": "Hallo {{firstName}}, willkommen bei Insighture!"
+    },
+    "stayConnected": {
+      "title": "In Verbindung bleiben",
+      "description": "Erhalten Sie nahtlos Updates und bleiben Sie mit Ihrem Team in Kontakt."
+    },
+    "trackProgress": {
+      "title": "Fortschritte verfolgen",
+      "description": "Überwachen Sie Ihre Aufgaben und sehen Sie Ihre Erfolge in Echtzeit."
+    },
+    "getStarted": {
+      "title": "Loslegen",
+      "description": "Lassen Sie uns alles einrichten und gemeinsam Ihren Arbeitsbereich erkunden!"
+    },
+    "actions": {
+      "next": "Weiter",
+      "finish": "Fertigstellen",
+      "skip": "Für jetzt überspringen"
+    }
+  },
+  "common": {
+    "comingSoon": "Demnächst..."
+  },
+  "home": {
+    "hero": {
+      "title": "Hallo {{name}}, willkommen zurück",
+      "secondaryTitle": "Entdecken Sie, was es bei SMB Neues gibt"
+    },
+    "quickActions": {
+      "title": "Was gibt's Neues bei SMB",
+      "items": {
+        "designSystem": {
+          "title": "Designsystem",
+          "subTitle": "Anpassbar"
+        },
+        "workSmart": {
+          "subTitle": "Erstellen Sie Ihre Apps mit KI",
+          "title": "Intelligent & schnell arbeiten"
+        },
+        "protectMatters": {
+          "subTitle": "Integriertes Schutzsystem",
+          "title": "Schützen, was am wichtigsten ist"
+        }
+      }
+    }
+  },
+  "search": {
+    "title": "Suchseite"
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "tabs": {
+      "all": "Alle",
+      "unread": "Ungelesen"
+    },
+    "sections": {
+      "today": "Heute",
+      "yesterday": "Gestern",
+      "older": "Älter"
+    },
+    "empty": "Keine Benachrichtigungen gefunden"
+  },
+  "profile": {
+    "title": "Profil",
+    "form": {
+      "firstName": {
+        "label": "Vorname",
+        "placeholder": "Geben Sie Ihren Vornamen ein",
+        "required": "Vorname ist erforderlich",
+        "minLength": "Vorname muss mindestens 2 Zeichen lang sein"
+      },
+      "lastName": {
+        "label": "Nachname",
+        "placeholder": "Geben Sie Ihren Nachnamen ein",
+        "required": "Nachname ist erforderlich",
+        "minLength": "Nachname muss mindestens 2 Zeichen lang sein"
+      },
+      "email": {
+        "label": "E-Mail",
+        "placeholder": "Geben Sie Ihre E-Mail-Adresse ein",
+        "required": "E-Mail ist erforderlich",
+        "invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein"
+      },
+      "phoneNumber": {
+        "label": "Telefonnummer",
+        "placeholder": "Geben Sie Ihre Telefonnummer ein",
+        "required": "Telefonnummer ist erforderlich",
+        "invalid": "Bitte geben Sie eine gültige Telefonnummer ein"
+      },
+      "address": {
+        "label": "Adresse",
+        "placeholder": "Geben Sie Ihre Adresse ein"
+      },
+      "city": {
+        "label": "Stadt",
+        "placeholder": "Geben Sie Ihre Stadt ein"
+      },
+      "zipCode": {
+        "label": "Postleitzahl",
+        "placeholder": "Geben Sie Ihre Postleitzahl ein",
+        "invalid": "Bitte geben Sie eine gültige Postleitzahl ein"
+      },
+      "actions": {
+        "save": "Speichern"
+      }
+    },
+    "avatar": {
+      "title": "Benutzer-Avatar bearbeiten",
+      "takePhoto": "Foto aufnehmen",
+      "selectLibrary": "Aus Galerie auswählen",
+      "delete": {
+        "actions": {
+          "delete": "Avatar entfernen"
+        },
+        "success": {
+          "title": "Erfolg",
+          "message": "Avatar erfolgreich entfernt"
+        },
+        "error": {
+          "title": "Fehler",
+          "message": "Fehler beim Entfernen des Avatars"
+        },
+        "failed": "Fehler beim Entfernen des Avatars"
+      },
+      "close": "Schließen",
+      "camera": {
+        "permission": {
+          "title": "Berechtigung erforderlich",
+          "message": "Bitte erteilen Sie Kamera- und Medienberechtigungen"
+        },
+        "cancel": "Upload abgebrochen"
+      },
+      "upload": {
+        "success": {
+          "title": "Erfolg",
+          "message": "Avatar erfolgreich aktualisiert"
+        },
+        "error": {
+          "title": "Fehler",
+          "message": "Fehler beim Hochladen des Avatars"
+        },
+        "failed": "Upload fehlgeschlagen",
+        "inProgress": "Avatar wird hochgeladen...",
+        "pleaseWait": "Bitte warten"
+      }
+    },
+    "noProfile": "Kein Benutzerprofil",
+    "noData": "Keine Benutzerprofildaten gefunden",
+    "update": {
+      "success": {
+        "title": "Erfolg",
+        "message": "Profil erfolgreich aktualisiert!"
+      },
+      "error": {
+        "title": "Fehler",
+        "message": "Fehler beim Aktualisieren des Profils. Bitte versuchen Sie es erneut."
+      }
+    },
+    "delete": {
+      "actions": { "delete": "Konto löschen" },
+      "success": {
+        "title": "Erfolg",
+        "message": "Profil erfolgreich aktualisiert!"
+      },
+      "error": {
+        "title": "Fehler",
+        "message": "Fehler beim Löschen des Profils. Benutzer nicht gefunden. Bitte versuchen Sie es erneut."
+      }
+    }
+  },
+  "setting": {
+    "title": "Einstellungen",
+    "items": {
+      "privacy": "Datenschutz",
+      "language": "Sprache",
+      "help": "Hilfe",
+      "about": "Über",
+      "feedback": "Feedback senden",
+      "theme": {
+        "mode": {
+          "title": "Design-Wechsel",
+          "darkMode": "Dunkler Modus"
+        },
+        "scheme": {
+          "title": "Design-Schema",
+          "default": "Standard",
+          "highContrast": "Hoher Kontrast",
+          "vibrantRed": "Leuchtendes Rot"
+        }
+      }
+    },
+    "actions": {
+      "logout": "Abmelden"
+    },
+    "messages": {
+      "noEmail": "Keine E-Mail verfügbar",
+      "noProfile": "Keine Benutzerprofildaten verfügbar"
+    },
+    "languageSwitch": {
+      "title": "Sprache ändern",
+      "actions": {
+        "confirm": "Fortfahren"
+      }
+    },
+    "privacy": {
+      "title": "Datenschutzrichtlinie",
+      "description": "Steuern Sie, wie Ihre Informationen verwendet und mit anderen geteilt werden",
+      "lastUpdate": "Letzte Aktualisierung"
+    },
+    "help": {
+      "title": "FAQs",
+      "description": "Finden Sie Antworten auf häufig gestellte Fragen zur SMB-App. Wenn Sie nicht finden, was Sie suchen, können Sie sich gerne an unser Support-Team wenden.",
+      "actions": {
+        "support": {
+          "title": "Brauchen Sie noch Hilfe?",
+          "description": "Wenn Sie die Antwort auf Ihre Frage nicht finden konnten, steht Ihnen unser Support-Team gerne zur Verfügung!",
+          "cta": "Support kontaktieren"
+        }
+      }
+    },
+    "about": {
+      "title": "Über",
+      "info": {
+        "title": "Über unsere App",
+        "description": "Willkommen bei der SMB-App, Ihrem vertrauenswürdigen Begleiter zur Verwaltung Ihrer täglichen Aufgaben und um organisiert zu bleiben. Wir sind bestrebt, Ihnen die bestmögliche Benutzererfahrung zu bieten."
+      },
+      "mission": {
+        "title": "Unsere Mission",
+        "description": "Wir streben danach, innovative Lösungen zu schaffen, die Ihr Leben vereinfachen und die Produktivität steigern. Unser Team ist der kontinuierlichen Verbesserung und der Bereitstellung eines außergewöhnlichen Mehrwerts für unsere Nutzer verpflichtet."
+      },
+      "items": {
+        "features": {
+          "question": "Funktionen",
+          "answer": "Intuitive Benutzeroberfläche mit Unterstützung für dunkles/helles Design\nSichere Authentifizierung und Datenschutz\nPlattformübergreifende Kompatibilität\nRegelmäßige Updates und neue Funktionen\n24/7 Kundensupport"
+        },
+        "team": {
+          "question": "Entwicklungsteam",
+          "answer": "Diese App wird von einem leidenschaftlichen Team aus Ingenieuren und Designern entwickelt, die bestrebt sind, das bestmögliche Erlebnis für unsere Nutzer zu schaffen."
+        },
+        "legal": {
+          "question": "Rechtliches",
+          "answer": "© 2024 Insighture. Alle Rechte vorbehalten. Diese Anwendung und ihre Inhalte sind durch Urheberrechte und andere Gesetze zum geistigen Eigentum geschützt."
+        }
+      },
+      "version": {
+        "title": "Versionsinformationen",
+        "appVersion": "App-Version: {{version}}",
+        "buildNumber": "Build-Nummer: {{number}}",
+        "releaseDate": "Veröffentlichungsdatum: {{date}}"
+      }
+    }
+  }
+}

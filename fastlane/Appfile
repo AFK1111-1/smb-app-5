@@ -1,0 +1,4 @@
+json_key_file("credentials/android/google-play-service-key.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("com.insighture.smbmobileapp") # e.g. com.krausefx.app
+
+app_identifier("com.insighture.smbmobile")

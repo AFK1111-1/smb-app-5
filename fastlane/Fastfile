@@ -1,0 +1,320 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tool
+
+default_platform(:android)
+
+platform :android do
+  desc "Build Android debug APK for development"
+  lane :dev_build do
+    gradle(task: "clean assembleRelease", project_dir: "./android", properties: {
+      "android.injected.signing.store.file" => "#{Dir.pwd}/../credentials/android/release.keystore",
+      "android.injected.signing.store.password" => ENV['ANDROID_KEYSTORE_PASSWORD'],
+      "android.injected.signing.key.alias" => ENV['ANDROID_KEY_ALIAS'],
+      "android.injected.signing.key.password" => ENV['ANDROID_KEY_PASSWORD']
+    })
+  end
+
+  desc "Submit a new internal test build to play store"
+  lane :qa_release do
+    previous_build_number = google_play_track_version_codes(
+      track: "internal",
+      json_key: "credentials/android/google-play-service-key.json"
+    )[0]
+
+    increment_version_name(
+      gradle_file_path: "android/app/build.gradle"
+    )
+    increment_version_code(
+      gradle_file_path: "android/app/build.gradle",
+      version_code: previous_build_number + 1
+    )
+
+    gradle(task: "clean bundleRelease", project_dir: "./android", properties: {
+      "android.injected.signing.store.file" => "#{Dir.pwd}/../credentials/android/release.keystore",
+      "android.injected.signing.store.password" => ENV['ANDROID_KEYSTORE_PASSWORD'],
+      "android.injected.signing.key.alias" => ENV['ANDROID_KEY_ALIAS'],
+      "android.injected.signing.key.password" => ENV['ANDROID_KEY_PASSWORD']
+    })
+
+    upload_to_play_store(
+      track: 'internal',
+      json_key: "credentials/android/google-play-service-key.json",
+      aab: "android/app/build/outputs/bundle/release/app-release.aab"
+    )
+
+    changelog_from_git_commits
+  end
+
+  desc "Submit a new staging build to play store"
+  lane :stg_release do
+    increment_version_name(
+      gradle_file_path: "android/app/build.gradle"
+    )
+    increment_version_code(
+      gradle_file_path: "android/app/build.gradle"
+    )
+
+    gradle(task: "clean bundleRelease", project_dir: "./android", properties: {
+      "android.injected.signing.store.file" => "#{Dir.pwd}/../credentials/android/release.keystore",
+      "android.injected.signing.store.password" => ENV['ANDROID_KEYSTORE_PASSWORD'],
+      "android.injected.signing.key.alias" => ENV['ANDROID_KEY_ALIAS'],
+      "android.injected.signing.key.password" => ENV['ANDROID_KEY_PASSWORD']
+    })
+
+    upload_to_play_store(
+      track: 'closed',
+      json_key: "credentials/android/google-play-service-key.json",
+      aab: "android/app/build/outputs/bundle/release/app-release.aab"
+    )
+
+    changelog_from_git_commits
+  end
+
+  desc "Submit a new production build to play store"
+  lane :production_release do
+    increment_version_name(
+      gradle_file_path: "android/app/build.gradle"
+    )
+    increment_version_code(
+      gradle_file_path: "android/app/build.gradle"
+    )
+
+    gradle(task: "clean bundleRelease", project_dir: "./android", properties: {
+      "android.injected.signing.store.file" => "#{Dir.pwd}/../credentials/android/release.keystore",
+      "android.injected.signing.store.password" => ENV['ANDROID_KEYSTORE_PASSWORD'],
+      "android.injected.signing.key.alias" => ENV['ANDROID_KEY_ALIAS'],
+      "android.injected.signing.key.password" => ENV['ANDROID_KEY_PASSWORD']
+    })
+
+    upload_to_play_store(
+      track: 'production',
+      release_status: "draft",
+      json_key: "credentials/android/google-play-service-key.json",
+      aab: "android/app/build/outputs/bundle/release/app-release.aab"
+    )
+  end
+end
+
+platform :ios do
+
+  desc "Build iOS simulator app for development"
+  lane :dev_build do
+    build_ios_app(
+      workspace: "ios/smbmobile.xcworkspace",
+      scheme: "smbmobile",
+      sdk: "iphonesimulator",
+      configuration: "Debug",
+      derived_data_path: "ios/build",
+      output_directory: "ios/build",
+      output_name: "smbmobile.app"
+    )
+  end
+
+  desc "Submit a new QA build to TestFlight"
+  lane :qa_release do
+    # Setup App Store Connect API authentication
+    api_key = app_store_connect_api_key(
+      key_id: ENV['APP_STORE_CONNECT_API_KEY_ID'],
+      issuer_id: ENV['APP_STORE_CONNECT_ISSUER_ID'],
+      key_filepath: "#{Dir.pwd}/../credentials/ios/AuthKey.p8"
+    )
+
+    # Fetch App Store provisioning profiles and certificates from private Git repo
+    match(
+      type: "appstore",
+      readonly: false,
+      app_identifier: "com.insighture.smbmobile",
+      git_url: "git@github.com:insighture/smb-mobile-fastlane.git",
+      api_key: api_key,
+      force_for_new_devices: true,
+      keychain_password: ENV['KEYCHAIN_PASSWORD'],
+      keychain_name: ENV['KEYCHAIN_NAME']
+    )
+    
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "ios/smbmobile.xcodeproj",
+      team_id: "96W7U4JYV4",
+      profile_name: "match AppStore com.insighture.smbmobile",
+      code_sign_identity: "iPhone Distribution",
+      targets: ["smbmobile"]
+    )
+
+    # Increment version number
+    increment_version_number(
+      xcodeproj: "ios/smbmobile.xcodeproj",
+      bump_type: "patch"
+    )
+    
+    # Get latest TestFlight build and increment
+    begin
+      latest_build = latest_testflight_build_number(
+        app_identifier: "com.insighture.smbmobile",
+        api_key: api_key
+      )
+      increment_build_number(
+        xcodeproj: "ios/smbmobile.xcodeproj",
+        build_number: latest_build + 1
+      )
+    rescue => ex
+      increment_build_number(xcodeproj: "ios/smbmobile.xcodeproj")
+    end
+
+    # Build configuration
+    build_config = {
+      workspace: "ios/smbmobile.xcworkspace",
+      scheme: "smbmobile",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "./ios/build",
+      output_name: "smbmobile.ipa",
+      destination: "generic/platform=iOS",
+      export_options: {
+        method: "app-store",
+        provisioningProfiles: {
+          "com.insighture.smbmobile" => "match AppStore com.insighture.smbmobile"
+        },
+        teamID: "96W7U4JYV4"
+      },
+      xcargs: "ONLY_ACTIVE_ARCH=NO ENABLE_BITCODE=NO COMPILER_INDEX_STORE_ENABLE=NO",
+      skip_profile_detection: true
+    }
+
+    # Build and archive
+    build_ios_app(build_config)
+
+    # Upload to TestFlight with auto-retry on duplicate build errors
+    max_retries = 3
+    retry_count = 0
+    upload_success = false
+    
+    while retry_count < max_retries && !upload_success
+      begin
+        upload_to_testflight(
+          skip_waiting_for_build_processing: true,
+          api_key: api_key
+        )
+        upload_success = true
+      rescue => ex
+        if ex.message.include?("bundle version must be higher") || ex.message.include?("DUPLICATE")
+          retry_count += 1
+          
+          if retry_count < max_retries
+            current_build = get_build_number(xcodeproj: "ios/smbmobile.xcodeproj")
+            increment_build_number(
+              xcodeproj: "ios/smbmobile.xcodeproj",
+              build_number: current_build.to_i + 1
+            )
+            build_ios_app(build_config)
+          else
+            raise ex
+          end
+        else
+          raise ex
+        end
+      end
+    end
+
+    changelog_from_git_commits
+  end
+
+  desc "Submit a new staging build to TestFlight"
+  lane :stg_release do
+    increment_version_number(
+      xcodeproj: "ios/smbmobile.xcodeproj",
+      bump_type: "patch"
+    )
+    increment_build_number(
+      xcodeproj: "ios/smbmobile.xcodeproj"
+    )
+
+    build_ios_app(
+      workspace: "ios/smbmobile.xcworkspace",
+      scheme: "smbmobile",
+      export_method: "app-store",
+      export_options: {
+        method: "app-store",
+        provisioningProfiles: {
+          "com.insighture.smbmobile" => "match AppStore com.insighture.smbmobile"
+        }
+      },
+      output_directory: "ios/build",
+      output_name: "smbmobile.ipa",
+      team_id: ENV['APPLE_TEAM_ID'] || "96W7U4JYV4"
+    )
+
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
+
+    changelog_from_git_commits
+  end
+
+  desc "Submit a new production build to App Store"
+  lane :production_release do
+    increment_version_number(
+      xcodeproj: "ios/smbmobile.xcodeproj",
+      bump_type: "patch"
+    )
+    increment_build_number(
+      xcodeproj: "ios/smbmobile.xcodeproj"
+    )
+
+    build_ios_app(
+      workspace: "ios/smbmobile.xcworkspace",
+      scheme: "smbmobile",
+      export_method: "app-store",
+      export_options: {
+        method: "app-store",
+        provisioningProfiles: {
+          "com.insighture.smbmobile" => "match AppStore com.insighture.smbmobile"
+        }
+      },
+      output_directory: "ios/build",
+      output_name: "smbmobile.ipa",
+      team_id: ENV['APPLE_TEAM_ID'] || "96W7U4JYV4"
+    )
+
+    upload_to_app_store(
+      skip_metadata: true,
+      skip_screenshots: true,
+      precheck_include_in_app_purchases: false
+    )
+
+    changelog_from_git_commits
+  end
+
+  desc "Submit a new production build to App Store (legacy)"
+  lane :release do
+    increment_version_number(
+      xcodeproj: "ios/smbmobile.xcodeproj",
+      bump_type: "patch"
+    )
+    increment_build_number(
+      xcodeproj: "ios/smbmobile.xcodeproj"
+    )
+
+    build_ios_app(
+      workspace: "ios/smbmobile.xcworkspace",
+      scheme: "smbmobile",
+      export_method: "app-store",
+      export_options: {
+        method: "app-store",
+        provisioningProfiles: {
+          "com.insighture.smbmobile" => "match AppStore com.insighture.smbmobile"
+        }
+      },
+      output_directory: "ios/build",
+      output_name: "smbmobile.ipa",
+      team_id: ENV['APPLE_TEAM_ID'] || "96W7U4JYV4"
+    )
+
+    upload_to_app_store(
+      skip_metadata: true,
+      skip_screenshots: true,
+      precheck_include_in_app_purchases: false
+    )
+
+    changelog_from_git_commits
+  end
+end

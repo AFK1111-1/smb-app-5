@@ -1,0 +1,202 @@
+name: QA Release Build
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  qa-build:
+    runs-on: macos-15
+    name: Build QA Release
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Ruby and Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Install Fastlane
+        run: |
+          gem install fastlane
+          bundle install
+
+      - name: Setup environment variables
+        run: |
+          echo "KINDE_DOMAIN=${{ vars.KINDE_DOMAIN }}" >> .env
+          echo "KINDE_CLIENT_ID=${{ vars.KINDE_CLIENT_ID }}" >> .env
+          echo "KINDE_SCOPES=${{ vars.KINDE_SCOPES }}" >> .env
+          echo "PUBLIC_API_URL=${{ vars.PUBLIC_API_URL }}" >> .env
+          echo "KINDE_AUDIENCE=${{ vars.KINDE_AUDIENCE }}" >> .env
+
+      - name: Create credentials directories
+        run: |
+          mkdir -p credentials/android
+          mkdir -p credentials/ios
+
+      - name: Setup Android Keystore
+        run: >
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode >
+          credentials/android/release.keystore
+
+      - name: Setup Google Play Service Key
+        run: |
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_KEY }}" | base64 --decode > credentials/android/google-play-service-key.json
+
+      - name: Setup Google Services JSON for Android
+        run: >
+          echo "${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}" | base64 --decode >
+          google-services.json
+
+      - name: Expo Prebuild for Android
+        run: npm run prebuild -- --platform android --clean
+
+      - name: Build and Release Android
+        run: fastlane android qa_release
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Setup Apple API Key
+        run: |
+          base64_content=$(echo "$APP_STORE_CONNECT_API_KEY_BASE64" | \
+            sed 's/-----BEGIN PRIVATE KEY-----//g' | \
+            sed 's/-----END PRIVATE KEY-----//g' | \
+            tr -d ' \n\r\t')
+
+          echo "-----BEGIN PRIVATE KEY-----" > credentials/ios/AuthKey.p8
+          echo "$base64_content" | fold -w 64 >> credentials/ios/AuthKey.p8
+          echo "-----END PRIVATE KEY-----" >> credentials/ios/AuthKey.p8
+        env:
+          APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+
+      - name: Setup Google Service Info Plist for iOS
+        run: >
+          echo "${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode >
+          GoogleService-Info.plist
+
+      - name: Expo Prebuild for iOS
+        run: npm run prebuild -- --platform ios --clean
+
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios
+          pod install
+          cd ..
+
+      - name: Setup SSH for Fastlane Match
+        run: |
+          mkdir -p ~/.ssh
+
+          if echo "$FASTLANE_MATCH_DEPLOY_KEY" | head -c 5 | grep -q "^-----"; then
+            echo "$FASTLANE_MATCH_DEPLOY_KEY" > ~/.ssh/id_rsa
+          else
+            echo "$FASTLANE_MATCH_DEPLOY_KEY" | base64 --decode > ~/.ssh/id_rsa
+          fi
+
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+        env:
+          FASTLANE_MATCH_DEPLOY_KEY: ${{ secrets.FASTLANE_MATCH_DEPLOY_KEY }}
+
+      - name: Setup Xcode 16.1
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.1'
+
+      - name: Setup Xcode First Launch and Install iOS 18.1 Runtime
+        run: |
+          sudo xcodebuild -runFirstLaunch
+          sudo xcodebuild -license accept || echo "License already accepted"
+          xcrun simctl list runtimes | grep iOS || echo "No iOS runtimes found"
+          sudo xcodebuild -downloadPlatform iOS &
+          DOWNLOAD_PID=$!
+          wait $DOWNLOAD_PID || echo "Download process finished"
+          sleep 30
+          xcrun simctl list runtimes | grep iOS || echo "No iOS runtimes found"
+
+      - name: Create temporary keychain
+        run: |
+          KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
+          KEYCHAIN_NAME="build.keychain"
+          echo "KEYCHAIN_PASSWORD=$KEYCHAIN_PASSWORD" >> $GITHUB_ENV
+          echo "KEYCHAIN_NAME=$KEYCHAIN_NAME" >> $GITHUB_ENV
+          
+          security delete-keychain "$KEYCHAIN_NAME" 2>/dev/null || true
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+          
+          EXISTING_KEYCHAINS=$(security list-keychains -d user | tr -d '"' | tr '\n' ' ')
+          security list-keychains -d user -s "$KEYCHAIN_NAME" $EXISTING_KEYCHAINS
+          security default-keychain -s "$KEYCHAIN_NAME"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+          security set-keychain-settings -t 3600 -u "$KEYCHAIN_NAME"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME" 2>/dev/null || true
+
+      - name: Unlock keychain
+        run: |
+          security unlock-keychain -p "${{ env.KEYCHAIN_PASSWORD }}" "${{ env.KEYCHAIN_NAME }}"
+
+      - name: Build and Release iOS
+        run: fastlane ios qa_release
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ env.KEYCHAIN_PASSWORD }}
+          KEYCHAIN_NAME: ${{ env.KEYCHAIN_NAME }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
+          FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 6
+
+      - name: Cleanup keychain
+        if: always()
+        run: |
+          security delete-keychain "${{ env.KEYCHAIN_NAME }}" 2>/dev/null || true
+
+      - name: Upload Android Release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      - name: Upload iOS Release IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-ipa
+          path: ios/build/smbmobile.ipa
+          retention-days: 30
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            ## QA Release v${{ github.run_number }}
+            ### 📱 Build Artifacts
+            - **🤖 Android AAB**: Download from Actions tab
+            - **🍎 iOS IPA**: Download from Actions tab
+            ### 📋 Build Details
+            - **Commit**: ${{ github.sha }}
+            - **Branch**: ${{ github.ref_name }}
+            - **Build Number**: ${{ github.run_number }}
+            - **Xcode**: 16.1 with iOS 18.1 runtime
+            ### 🚀 Deployment
+            - Android: Internal track on Google Play
+            - iOS: TestFlight
+          draft: false
+          tag_name: qa-v${{ github.run_number }}
+          prerelease: true
+          name: QA Release v${{ github.run_number }}
+          token: ${{ secrets.GITHUB_TOKEN }}
