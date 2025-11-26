@@ -15,28 +15,19 @@ export const AVAILABLE_LOCALES = [
   { code: 'en-US', label: 'English', flag: '🇺🇸' },
   { code: 'de-DE', label: 'Deutsch', flag: '🇩🇪' },
 ];
-
-let isInitialized = false;
-
 const initI18n = async() =>{
-    if (isInitialized) return;
-
-    let savedLanguage: string | null = null;
-
-    savedLanguage = await AsyncStorage.getItem('language'); // Check if a locale is already saved
-
+    let savedLanguage = await AsyncStorage.getItem('language'); // Check if a locale is already saved
     if(!savedLanguage){
         const deviceLanguage = getLocales()[0];
         //save user locale as preferred locale
         const userLocale = `${deviceLanguage.languageCode}-${deviceLanguage.regionCode}`
         savedLanguage = userLocale
-
         await AsyncStorage.setItem('language',userLocale)
     }
     const selectedLang = AVAILABLE_LOCALES.some(({code}) => code === savedLanguage) ? savedLanguage!: DEFAULT_LOCALE;
 
-    await i18n
-    .use(initReactI18next).init({
+    i18n
+    .use(initReactI18next).init({ 
         resources,
         lng: selectedLang,
         fallbackLng: DEFAULT_LOCALE,
@@ -44,12 +35,9 @@ const initI18n = async() =>{
             escapeValue: true
         }
     })
-
-    isInitialized = true;
 }
 
 
-// Initialize immediately
 initI18n();
 
 export const changeAppLanguage = async(lang: string) => {

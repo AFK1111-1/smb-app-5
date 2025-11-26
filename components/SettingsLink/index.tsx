@@ -3,7 +3,7 @@ import { useAppTheme, useThemeContext } from '@/context/ThemeContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Text } from '../ui';
+import { Text } from 'react-native-paper';
 
 type SettingsLinkProps = {
   title: string;
@@ -28,7 +28,7 @@ const SettingsLink = ({ title, icon, onPress, isLast }: SettingsLinkProps) => {
     >
       <View style={styles.titleWrapper}>
         <MaterialCommunityIcons name={icon} size={24} color={colors.text} />
-        <Text style={styles.title}>
+        <Text variant="bodyLarge" style={styles.title}>
           {title}
         </Text>
       </View>

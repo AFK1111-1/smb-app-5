@@ -7,7 +7,7 @@ const mockLogout = async () => Promise.resolve({} as any);
 const mockDeleteUser = async () => Promise.resolve({});
 const mockDeleteUserAvatar = async () => Promise.resolve({ message: 'ok' });
 const mockUpdateUserAvatar = async () => Promise.resolve({});
-const mockGenerateAvatarUploadURL = async () => Promise.resolve({ url: 'https://example.com/upload', key: 'avatar-key' });
+const mockUpdateCurrentUser = () => {};
 
 const meta: Meta<typeof ProfileScreen> = {
   title: 'Screens/Profile',
@@ -17,11 +17,12 @@ const meta: Meta<typeof ProfileScreen> = {
     isAvatarUploading: false,
     queryClient: new QueryClient(),
     isUserDeleting: false,
+    isUserUpdating: false,
     logout: mockLogout,
     deleteUser: mockDeleteUser,
     deleteUserAvatar: mockDeleteUserAvatar,
     updateUserAvatar: mockUpdateUserAvatar,
-    generateAvatarUploadURL: mockGenerateAvatarUploadURL,
+    updateCurrentUser: mockUpdateCurrentUser,
     t: i18next.t,
   },
 };

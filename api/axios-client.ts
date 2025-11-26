@@ -8,22 +8,6 @@ const { PUBLIC_API_URL } = Constants.expoConfig?.extra ?? {};
 const API = axios.create({
   baseURL: `${PUBLIC_API_URL}`,
   timeout: 10000,
-  transformResponse: [
-    (data) => {
-      // Handle empty responses
-      if (!data || data === '') {
-        console.warn('⚠️ Empty response received from API');
-        return null;
-      }
-      // Try to parse JSON, return raw data if it fails
-      try {
-        return JSON.parse(data);
-      } catch (e) {
-        console.error('⚠️ Failed to parse JSON response:', data);
-        return data;
-      }
-    },
-  ],
 });
 
 API.interceptors.request.use(
@@ -71,22 +55,13 @@ API.interceptors.response.use(
       status: error.response?.status,
       statusText: error.response?.statusText,
       data: error.response?.data,
-      rawResponse: error.response,
       config: {
         method: error.config?.method,
         url: error.config?.url,
         baseURL: error.config?.baseURL,
-        fullURL: error.config?.url ? `${error.config?.baseURL}${error.config?.url}` : undefined,
         data: error.config?.data,
       },
     });
-
-    // Handle JSON parse errors specifically
-    if (error.message?.includes('JSON') || error.message?.includes('parse')) {
-      console.error('🚨 JSON Parse Error - likely empty or invalid response body');
-      console.error('Response status:', error.response?.status);
-      console.error('Response headers:', error.response?.headers);
-    }
 
     if (errorStatus === 401 || errorStatus === 403) {
       console.warn('Unauthorized access. You may need to log in again.');

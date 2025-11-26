@@ -1,5 +1,5 @@
 import { useAppTheme } from '@/context/ThemeContext';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SafeScreen = ({
@@ -21,7 +21,7 @@ const SafeScreen = ({
   const bottomBgColor = bottomBackgroundColor || defaultBgColor;
 
   return (
-    <View style={styles.maniContainer}>
+    <View style={{ flex: 1 }}>
       {insets.top > 0 && (
         <View
           style={{
@@ -51,11 +51,5 @@ const SafeScreen = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  maniContainer: {
-    flex: 1,
-  },
-});
 
 export default SafeScreen;

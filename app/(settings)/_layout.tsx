@@ -3,7 +3,6 @@ import SafeScreen from '@/components/SafeScreen';
 import { useAppTheme } from '@/context/ThemeContext';
 import { Stack, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Fonts } from '@/constants/Fonts';
 
 export default function SettingsLayout() {
   const { colors } = useAppTheme();
@@ -20,7 +19,7 @@ const {t} = useTranslation()
           headerTitleAlign: 'left',
           headerTintColor: colors.text,
           headerTitleStyle: {
-            fontFamily: Fonts.semiBold,
+            fontWeight: '600',
             fontSize: 24,
           },
           headerBackVisible: false,

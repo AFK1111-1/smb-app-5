@@ -6,13 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import Constants from 'expo-constants';
-import { Fonts } from '@/constants/Fonts';
-import { AppColors } from '@/constants/Colors';
 export default function AboutScreen() {
   const { colors } = useAppTheme();
   const { t } = useTranslation();
   const [expandedItems, setExpandedItems] = useState<number[]>([]);
-  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const toggleExpanded = (index: number) => {
     setExpandedItems((prev) =>
@@ -46,8 +43,8 @@ export default function AboutScreen() {
   
   return (
     <ScrollView
-      style={styles.scrollView}
-      contentContainerStyle={styles.scrollViewContent}
+      style={{ flex: 1, backgroundColor: colors.background }}
+      contentContainerStyle={{ paddingBottom: 20 }}
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.container}>
@@ -169,69 +166,61 @@ const AboutItem = ({
   );
 };
 
-const createStyles = (colors: AppColors) =>
-  StyleSheet.create({
-    scrollView: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    scrollViewContent: {
-      paddingBottom: 20,
-    },
-    container: {
-      flex: 1,
-      padding: 20,
-      gap: 16,
-    },
-    header: {
-      marginBottom: 30,
-    },
-    title: {
-      fontSize: 28,
-      fontFamily: Fonts.bold,
-      marginBottom: 12,
-    },
-    subtitle: {
-      marginBottom: 16,
-    },
-    description: {
-      fontSize: 16,
-      lineHeight: 24,
-      opacity: 0.9,
-    },
-    section: {
-      marginBottom: 24,
-    },
-    sectionTitle: {
-      marginBottom: 8,
-    },
-    sectionText: {
-      opacity: 0.8,
-    },
-    aboutItem: {
-      borderRadius: 8,
-      overflow: 'hidden',
-    },
-    aboutHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: 16,
-    },
-    aboutQuestion: {
-      fontSize: 16,
-      fontFamily: Fonts.semiBold,
-      flex: 1,
-      marginRight: 12,
-    },
-    aboutAnswer: {
-      paddingHorizontal: 16,
-      paddingBottom: 16,
-      paddingTop: 0,
-    },
-    aboutAnswerText: {
-      fontSize: 15,
-      lineHeight: 22,
-      opacity: 0.8,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    gap: 16,
+  },
+  header: {
+    marginBottom: 30,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    marginBottom: 12,
+  },
+  subtitle: {
+    marginBottom: 16,
+  },
+  description: {
+    fontSize: 16,
+    lineHeight: 24,
+    opacity: 0.9,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    marginBottom: 8,
+  },
+  sectionText: {
+    opacity: 0.8,
+  },
+  aboutItem: {
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  aboutHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+  },
+  aboutQuestion: {
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
+    marginRight: 12,
+  },
+  aboutAnswer: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    paddingTop: 0,
+  },
+  aboutAnswerText: {
+    fontSize: 15,
+    lineHeight: 22,
+    opacity: 0.8,
+  },
+});

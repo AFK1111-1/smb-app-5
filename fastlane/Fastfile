@@ -45,31 +45,6 @@ platform :android do
     changelog_from_git_commits
   end
 
-  desc "Submit a new staging build to play store"
-  lane :stg_release do
-    increment_version_name(
-      gradle_file_path: "android/app/build.gradle"
-    )
-    increment_version_code(
-      gradle_file_path: "android/app/build.gradle"
-    )
-
-    gradle(task: "clean bundleRelease", project_dir: "./android", properties: {
-      "android.injected.signing.store.file" => "#{Dir.pwd}/../credentials/android/release.keystore",
-      "android.injected.signing.store.password" => ENV['ANDROID_KEYSTORE_PASSWORD'],
-      "android.injected.signing.key.alias" => ENV['ANDROID_KEY_ALIAS'],
-      "android.injected.signing.key.password" => ENV['ANDROID_KEY_PASSWORD']
-    })
-
-    upload_to_play_store(
-      track: 'closed',
-      json_key: "credentials/android/google-play-service-key.json",
-      aab: "android/app/build/outputs/bundle/release/app-release.aab"
-    )
-
-    changelog_from_git_commits
-  end
-
   desc "Submit a new production build to play store"
   lane :production_release do
     increment_version_name(

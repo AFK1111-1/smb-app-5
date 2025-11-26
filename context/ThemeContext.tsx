@@ -8,7 +8,6 @@ import {
   VibrantRedDarkThemeColors,
   VibrantRedLightThemeColors,
 } from '@/constants/Colors';
-import { Fonts } from '@/constants/Fonts';
 import { StorageKeys } from '@/constants/localStorage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -18,7 +17,6 @@ import {
   useEffect,
   useMemo,
   useState,
-  useCallback,
 } from 'react';
 import { Appearance } from 'react-native';
 import {
@@ -39,104 +37,31 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-// Configure custom fonts for the app
-const fontConfig = {
-  displayLarge: {
-    fontFamily: Fonts.bold,
-  },
-  displayMedium: {
-    fontFamily: Fonts.bold,
-  },
-  displaySmall: {
-    fontFamily: Fonts.bold,
-  },
-  headlineLarge: {
-    fontFamily: Fonts.semiBold,
-  },
-  headlineMedium: {
-    fontFamily: Fonts.semiBold,
-  },
-  headlineSmall: {
-    fontFamily: Fonts.semiBold,
-  },
-  titleLarge: {
-    fontFamily: Fonts.medium,
-  },
-  titleMedium: {
-    fontFamily: Fonts.medium,
-  },
-  titleSmall: {
-    fontFamily: Fonts.medium,
-  },
-  labelLarge: {
-    fontFamily: Fonts.medium,
-  },
-  labelMedium: {
-    fontFamily: Fonts.medium,
-  },
-  labelSmall: {
-    fontFamily: Fonts.medium,
-  },
-  bodyLarge: {
-    fontFamily: Fonts.regular,
-  },
-  bodyMedium: {
-    fontFamily: Fonts.regular,
-  },
-  bodySmall: {
-    fontFamily: Fonts.regular,
-  },
-};
-
 const appDarkTheme = {
   ...MD3DarkTheme,
   colors: DarkThemeColors,
-  fonts: {
-    ...MD3DarkTheme.fonts,
-    ...fontConfig,
-  },
 };
 const appLightTheme = {
   ...MD3LightTheme,
   colors: LightThemeColors,
-  fonts: {
-    ...MD3LightTheme.fonts,
-    ...fontConfig,
-  },
 };
 
 const appHighContrastLightTheme = {
   ...MD3LightTheme,
   colors: HighContrastLightThemeColors,
-  fonts: {
-    ...MD3LightTheme.fonts,
-    ...fontConfig,
-  },
 };
 const appHighContrastDarkTheme = {
   ...MD3DarkTheme,
   colors: HighContrastDarkThemeColors,
-  fonts: {
-    ...MD3DarkTheme.fonts,
-    ...fontConfig,
-  },
 };
 
 const appVibrantRedLightTheme = {
   ...MD3LightTheme,
   colors: VibrantRedLightThemeColors,
-  fonts: {
-    ...MD3LightTheme.fonts,
-    ...fontConfig,
-  },
 };
 const appVibrantRedDarkTheme = {
   ...MD3DarkTheme,
   colors: VibrantRedDarkThemeColors,
-  fonts: {
-    ...MD3DarkTheme.fonts,
-    ...fontConfig,
-  },
 };
 
 const getTheme = (isDark: boolean, scheme: ThemeScheme) => {
@@ -165,11 +90,11 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
     themeMode === ThemeMode.DARK ||
     (themeMode === ThemeMode.SYSTEM && colorScheme === ThemeMode.DARK);
 
-  const toggleTheme = useCallback(() => {
+  const toggleTheme = () => {
     setThemeMode((prev) =>
       prev === ThemeMode.DARK || isDark ? ThemeMode.LIGHT : ThemeMode.DARK,
     );
-  }, [isDark]);
+  };
 
   useEffect(() => {
     // Set previously stored theme mode, theme scheme
@@ -207,7 +132,7 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
     AsyncStorage.setItem(StorageKeys.ThemeScheme, themeScheme);
   }, [themeScheme]);
 
-  const handleThemeManualSwitch = useCallback((mode: ThemeMode) => {
+  const handleThemeManualSwitch = (mode: ThemeMode) => {
     switch (mode) {
       case ThemeMode.DARK:
         setThemeMode(ThemeMode.DARK);
@@ -223,9 +148,9 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
         setThemeMode(ThemeMode.SYSTEM);
         break;
     }
-  }, []);
+  };
 
-  const handleThemeSchemeSwitch = useCallback((scheme: ThemeScheme) => {
+  const handleThemeSchemeSwitch = (scheme: ThemeScheme) => {
     switch (scheme) {
       case ThemeScheme.DEFAULT:
         setThemeScheme(ThemeScheme.DEFAULT);
@@ -240,7 +165,7 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
         setThemeScheme(ThemeScheme.DEFAULT);
         break;
     }
-  }, []);
+  };
   const value = useMemo(
     () => ({
       isDark,
@@ -250,7 +175,7 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
       handleThemeManualSwitch,
       handleThemeSchemeSwitch,
     }),
-    [themeMode, isDark, themeScheme, toggleTheme, handleThemeManualSwitch, handleThemeSchemeSwitch],
+    [themeMode, isDark, themeScheme],
   );
   const theme = useMemo(() => {
     return getTheme(isDark, themeScheme);

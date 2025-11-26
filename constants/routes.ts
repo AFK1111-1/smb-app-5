@@ -2,7 +2,6 @@ export const ROUTES = {
   ROOT: '/(root)',
   MAIN_TABS: '/(tabs)',
   SETTINGS: '/(settings)',
-  PROFILE: '/(tabs)/profile',
 
   LOGIN: '/login',
   SIGN_UP: '/sign-up',

@@ -8,12 +8,10 @@ import { useRouter } from 'expo-router';
 import { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import 'react-native-gesture-handler';
-import { useAppTheme } from '@/context/ThemeContext';
 
 export default function GetStartNow() {
   const { isAuthenticated, login, isLoading } = useKindeAuth();
   const router = useRouter();
-  const { colors } = useAppTheme();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -49,7 +47,7 @@ export default function GetStartNow() {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: colors.primary,
+        backgroundColor: '#5157E6',
         padding: 24,
       }}
     >
@@ -85,9 +83,9 @@ export default function GetStartNow() {
             width: 220,
             alignItems: 'center',
           }}
-          buttonColor={colors.white}
+          buttonColor="#fff"
           labelStyle={{
-            color: colors.primary,
+            color: '#5157E6',
           }}
         >
           Get Started

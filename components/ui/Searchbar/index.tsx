@@ -13,6 +13,10 @@ import {
 
 type FocusEvent = NativeSyntheticEvent<TextInputFocusEventData>;
 
+// FIXME - move to theme; ref: https://www.figma.com/design/b4bqgPGWLfChOZ9UphsW0n/SMB-Design-system?node-id=1-16&t=Fb47n7NC8APJXlkU-4
+const FOCUS_BORDER = '#A3BBFD';
+const FOCUS_SHADOW = '#F0F1FB';
+
 const Searchbar = (props: PaperSearchbarProps) => {
   const { onFocus, onBlur, ...rest } = props;
   const { colors } = useAppTheme();
@@ -58,11 +62,11 @@ const createStyles = (colors: AppColors, isFocused: boolean) => {
   return StyleSheet.create({
     searchbar: {
       borderRadius: 8,
-      backgroundColor: colors.card,
-      borderColor: isFocused ? colors.searchbarFocusBorder : colors.backgrounds.quaternary,
+      backgroundColor: colors.backgrounds.primary,
+      borderColor: isFocused ? FOCUS_BORDER : colors.backgrounds.quaternary,
       borderWidth: 1,
       ...(isFocused && {
-        boxShadow: `0px 0px 0px 2px ${colors.searchbarFocusShadow}`,
+        boxShadow: `0px 0px 0px 2px ${FOCUS_SHADOW}`,
       }),
     },
     inputText: {

@@ -45,9 +45,9 @@ export default function TabLayout() {
       <UserAuthGuard>
         <UserOnBoardingGuard>
           <SafeScreen
-            topBackgroundColor={colors.backgrounds.primary}
+            topBackgroundColor={colors.background}
             bottomBackgroundColor={colors.tabCardBg}
-            backgroundColor={colors.backgrounds.primary}
+            backgroundColor={colors.background}
           >
             <Tabs
               screenOptions={{
@@ -58,7 +58,7 @@ export default function TabLayout() {
                 tabBarStyle: {
                   backgroundColor: colors.tabCardBg,
                   paddingTop: 16,
-                  borderColor: colors.tabBorderColor,
+                  borderColor: '#444D5B',
                 },
                 sceneStyle: {
                   backgroundColor: colors.background,
@@ -89,25 +89,9 @@ export default function TabLayout() {
                         />
                       </View>
                     ),
-                    sceneStyle: tab.name === 'profile' ? {
-                      backgroundColor: colors.background,
-                      paddingHorizontal: 0,
-                    } : undefined,
                   }}
                 />
               ))}
-              <Tabs.Screen
-                name="manage-account"
-                options={{
-                  href: null,
-                  headerShown: false,
-                  title: 'Manage Account',
-                  sceneStyle: {
-                    backgroundColor: colors.background,
-                    paddingHorizontal: 0,
-                  },
-                }}
-              />
             </Tabs>
           </SafeScreen>
         </UserOnBoardingGuard>

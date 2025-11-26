@@ -5,7 +5,7 @@ import { Image } from 'expo-image';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import { Text } from '../ui';
+import { Text } from 'react-native-paper';
 
 const { width } = Dimensions.get('window');
 
@@ -17,7 +17,7 @@ const ComingSoon = ({ title }: { title: string }) => {
   
   return (
     <View style={styles.container}>
-      <Text variant="bold" style={styles.title}>
+      <Text variant="displaySmall" style={styles.title}>
         {title}
       </Text>
       <Image
@@ -25,7 +25,7 @@ const ComingSoon = ({ title }: { title: string }) => {
         style={styles.image}
         contentFit="contain"
       />
-      <Text style={styles.subtitle}>
+      <Text variant="bodyLarge" style={styles.subtitle}>
         {t("common.comingSoon")}
       </Text>
     </View>
@@ -45,7 +45,6 @@ const createStyles = (colors: AppColors) =>
     title: {
       marginBottom: 16,
       color: colors.text,
-      fontSize: 24,
     },
     subtitle: {
       color: colors.textSecondary,

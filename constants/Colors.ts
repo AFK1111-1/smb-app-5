@@ -57,61 +57,19 @@ export interface AppColors extends MD3Colors {
   disabled: string;
   placeholder: string;
 
-  // Input specific colors
-  inputBackground: string;
-  inputBorder: string;
-  inputBorderHover: string;
-  inputBorderFocused: string;
-  inputBorderError: string;
-  inputBackgroundDisabled: string;
-  inputBackgroundReadOnly: string;
-  inputBackgroundError: string;
-  inputShadowFocused: string;
-  inputShadowHover: string;
-  inputText: string;
-  inputTextPlaceholder: string;
-  inputTextFilled: string;
-  inputLabel: string;
-
   // Tabs
   tabCardBg: string;
-  tabBorderColor: string;
 
   // Form Fields
   formFieldBg: string;
 
   // icon colors
   iconBg: string;
-
-  // Profile and UI specific colors
-  avatarBorder: string;
-  cameraButton: string;
-  editIconColor: string;
-  menuItemIcon: string;
-  menuItemChevron: string;
-  menuItemSeparator: string;
-  logoutCardBg: string;
-  deleteButtonBorder: string;
-  deleteButtonBg: string;
-
-  // Dashboard card colors
-  cardLayerBase: string;
-  cardLayerMiddle: string;
-  cardTextLight: string;
-  cardTextLightest: string;
-
-  // Searchbar colors
-  searchbarFocusBorder: string;
-  searchbarFocusShadow: string;
-
-  // Radio button colors
-  radioButtonActive: string;
-  radioButtonBg: string;
 }
 
 export const LightThemeColors: AppColors = {
   backgrounds: {
-    primary: '#F9FAFB',
+    primary: '#FFFFFF',
     secondary: '#F9FAFB',
     tertiary: '#F3F4F6',
     quaternary: '#E5E7EB',
@@ -188,69 +146,26 @@ export const LightThemeColors: AppColors = {
   info: '#5AC8FA',
 
   // Border and divider colors
-  border: '#E2E4EB',
-  divider: '#E5E7EB',
+  border: '#E5E5EA',
+  divider: '#C6C6C8',
 
   // Additional utility colors
   overlay: 'rgba(0, 0, 0, 0.5)',
   disabled: '#C7C7CC',
   placeholder: '#C7C7CC',
 
-  // Input specific colors
-  inputBackground: '#FFFFFF',
-  inputBorder: '#E5E7EB',
-  inputBorderHover: '#7F98F9',
-  inputBorderFocused: '#7F98F9',
-  inputBorderError: '#EF4444',
-  inputBackgroundDisabled: '#F9FAFB',
-  inputBackgroundReadOnly: '#F9FAFB',
-  inputBackgroundError: 'rgba(254, 202, 202, 0.20)',
-  inputShadowFocused: '#E0EAFF',
-  inputShadowHover: '#F7F8FE',
-  inputText: '#374151',
-  inputTextPlaceholder: '#D1D5DB',
-  inputTextFilled: '#4B5563',
-  inputLabel: '#374151',
-
   // Tabs
   tabCardBg: '#F7F8FE',
-  tabBorderColor: '#E2E4EB',
 
   // Form Fields
   formFieldBg: '#ffffff',
 
   // icon colors
   iconBg: '#ffffff',
-
-  // Profile and UI specific colors
-  avatarBorder: '#6C727E',
-  cameraButton: '#6071F3',
-  editIconColor: '#6071F3',
-  menuItemIcon: '#384250',
-  menuItemChevron: '#9CA3AF',
-  menuItemSeparator: '#E2E4EB',
-  logoutCardBg: '#F7F8FE',
-  deleteButtonBorder: '#E5565C',
-  deleteButtonBg: '#FEF3F2',
-
-  // Dashboard card colors
-  cardLayerBase: '#372d6e',
-  cardLayerMiddle: '#ff4267',
-  cardTextLight: '#e2e4eb',
-  cardTextLightest: '#f7f8fe',
-
-  // Searchbar colors
-  searchbarFocusBorder: '#A3BBFD',
-  searchbarFocusShadow: '#F0F1FB',
-
-  // Radio button colors
-  radioButtonActive: '#007bff',
-  radioButtonBg: '#f8f9fa',
 };
-
 export const DarkThemeColors: AppColors = {
   backgrounds: {
-    primary: '#111927',
+    primary: '#101827',
     secondary: '#1F2937',
     tertiary: '#374151',
     quaternary: '#4B5563',
@@ -307,8 +222,8 @@ export const DarkThemeColors: AppColors = {
 
   // Text colors
   text: '#FFFFFF',
-  textSecondary: '#E2E4EB',
-  textMuted: '#878B9E',
+  textSecondary: '#EBEBF5',
+  textMuted: '#8E8E93',
 
   // Primary colors
   primaryLight: '#64D2FF',
@@ -335,56 +250,14 @@ export const DarkThemeColors: AppColors = {
   disabled: '#48484A',
   placeholder: '#8E8E93',
 
-  // Input specific colors
-  inputBackground: '#1E293B',
-  inputBorder: '#334155',
-  inputBorderHover: '#7F98F9',
-  inputBorderFocused: '#7F98F9',
-  inputBorderError: '#EF4444',
-  inputBackgroundDisabled: '#1E293B',
-  inputBackgroundReadOnly: '#1E293B',
-  inputBackgroundError: 'rgba(254, 202, 202, 0.20)',
-  inputShadowFocused: '#1F2A37',
-  inputShadowHover: 'rgba(75, 85, 99, 0.20)',
-  inputText: '#F9FAFB',
-  inputTextPlaceholder: '#D1D5DB',
-  inputTextFilled: '#E5E7EB',
-  inputLabel: '#F9FAFB',
-
   // Tabs
   tabCardBg: '#22293B',
-  tabBorderColor: '#444D5B',
 
   // Form Fields
   formFieldBg: '#252B3B',
 
   // icon colors
   iconBg: '#6466F1',
-
-  // Profile and UI specific colors
-  avatarBorder: '#F7F8FE',
-  cameraButton: 'rgba(18, 24, 38, 0.4)',
-  editIconColor: '#C9CCD9',
-  menuItemIcon: '#FFFFFF',
-  menuItemChevron: '#FFFFFF',
-  menuItemSeparator: 'rgba(74, 84, 97, 0.6)',
-  logoutCardBg: '#22293B',
-  deleteButtonBorder: '#FF453A',
-  deleteButtonBg: '#4B1818',
-
-  // Dashboard card colors
-  cardLayerBase: '#2a2561',
-  cardLayerMiddle: '#d83657',
-  cardTextLight: '#e2e4eb',
-  cardTextLightest: '#f7f8fe',
-
-  // Searchbar colors
-  searchbarFocusBorder: '#8BA9F3',
-  searchbarFocusShadow: '#2A2F3F',
-
-  // Radio button colors
-  radioButtonActive: '#3399ff',
-  radioButtonBg: '#2A2F3F',
 };
 
 export const HighContrastLightThemeColors: AppColors = {
@@ -484,56 +357,14 @@ export const HighContrastLightThemeColors: AppColors = {
   disabled: '#A0A0A0',
   placeholder: '#666666',
 
-  // Input specific colors
-  inputBackground: '#FFFFFF',
-  inputBorder: '#000000',
-  inputBorderHover: '#1A1AFF',
-  inputBorderFocused: '#1A1AFF',
-  inputBorderError: '#B00020',
-  inputBackgroundDisabled: '#F9FAFB',
-  inputBackgroundReadOnly: '#F9FAFB',
-  inputBackgroundError: 'rgba(255, 218, 212, 0.40)',
-  inputShadowFocused: '#DDE1FF',
-  inputShadowHover: '#F0F0FF',
-  inputText: '#000000',
-  inputTextPlaceholder: '#666666',
-  inputTextFilled: '#1A1A1A',
-  inputLabel: '#000000',
-
   // Tabs
   tabCardBg: '#F0F0FF',
-  tabBorderColor: '#000000',
 
   // Form fields
   formFieldBg: '#FFFFFF',
 
   // icon colors
   iconBg: '#6466F1',
-
-  // Profile and UI specific colors
-  avatarBorder: '#000000',
-  cameraButton: '#1A1AFF',
-  editIconColor: '#1A1AFF',
-  menuItemIcon: '#000000',
-  menuItemChevron: '#4A4A4A',
-  menuItemSeparator: '#000000',
-  logoutCardBg: '#F9F9FC',
-  deleteButtonBorder: '#B00020',
-  deleteButtonBg: '#FFDAD4',
-
-  // Dashboard card colors
-  cardLayerBase: '#1A1AFF',
-  cardLayerMiddle: '#B00020',
-  cardTextLight: '#000000',
-  cardTextLightest: '#1A1A1A',
-
-  // Searchbar colors
-  searchbarFocusBorder: '#1A1AFF',
-  searchbarFocusShadow: '#DDE1FF',
-
-  // Radio button colors
-  radioButtonActive: '#1A1AFF',
-  radioButtonBg: '#F9F9FC',
 };
 export const HighContrastDarkThemeColors: AppColors = {
   backgrounds: {
@@ -632,56 +463,14 @@ export const HighContrastDarkThemeColors: AppColors = {
   disabled: '#555555',
   placeholder: '#888888',
 
-  // Input specific colors
-  inputBackground: '#121212',
-  inputBorder: '#BBBBBB',
-  inputBorderHover: '#6690FF',
-  inputBorderFocused: '#6690FF',
-  inputBorderError: '#FF453A',
-  inputBackgroundDisabled: '#1A1A1A',
-  inputBackgroundReadOnly: '#1A1A1A',
-  inputBackgroundError: 'rgba(122, 0, 0, 0.40)',
-  inputShadowFocused: '#0033CC',
-  inputShadowHover: 'rgba(102, 144, 255, 0.20)',
-  inputText: '#FFFFFF',
-  inputTextPlaceholder: '#888888',
-  inputTextFilled: '#E0E0E0',
-  inputLabel: '#FFFFFF',
-
   // Tabs
   tabCardBg: '#1E1E1E',
-  tabBorderColor: '#666666',
 
   // Form Fields
   formFieldBg: '#1A1A1A',
 
   // icon colors
   iconBg: '#6466F1',
-
-  // Profile and UI specific colors
-  avatarBorder: '#BBBBBB',
-  cameraButton: '#6690FF',
-  editIconColor: '#AAAAAA',
-  menuItemIcon: '#FFFFFF',
-  menuItemChevron: '#666666',
-  menuItemSeparator: '#666666',
-  logoutCardBg: '#1E1E1E',
-  deleteButtonBorder: '#FF453A',
-  deleteButtonBg: '#7A0000',
-
-  // Dashboard card colors
-  cardLayerBase: '#0033CC',
-  cardLayerMiddle: '#7A0000',
-  cardTextLight: '#FFFFFF',
-  cardTextLightest: '#E0E0E0',
-
-  // Searchbar colors
-  searchbarFocusBorder: '#6690FF',
-  searchbarFocusShadow: '#0033CC',
-
-  // Radio button colors
-  radioButtonActive: '#6690FF',
-  radioButtonBg: '#1E1E1E',
 };
 
 export const VibrantRedLightThemeColors: AppColors = {
@@ -763,64 +552,22 @@ export const VibrantRedLightThemeColors: AppColors = {
   info: '#5AC8FA',
 
   // Border and divider colors
-  border: '#E2E4EB',
-  divider: '#E5E7EB',
+  border: '#E5E5EA',
+  divider: '#C6C6C8',
 
   // Additional utility colors
   overlay: 'rgba(0, 0, 0, 0.5)',
   disabled: '#C7C7CC',
   placeholder: '#C7C7CC',
 
-  // Input specific colors
-  inputBackground: '#FFFFFF',
-  inputBorder: '#E5E7EB',
-  inputBorderHover: '#DF1C59',
-  inputBorderFocused: '#DF1C59',
-  inputBorderError: '#FF3B30',
-  inputBackgroundDisabled: '#F9FAFB',
-  inputBackgroundReadOnly: '#F9FAFB',
-  inputBackgroundError: 'rgba(254, 202, 202, 0.20)',
-  inputShadowFocused: '#FFE5ED',
-  inputShadowHover: '#FFF0F5',
-  inputText: '#374151',
-  inputTextPlaceholder: '#D1D5DB',
-  inputTextFilled: '#4B5563',
-  inputLabel: '#374151',
-
   // Tabs
   tabCardBg: '#F7F8FE',
-  tabBorderColor: '#E2E4EB',
 
   // Form Fields
   formFieldBg: '#ffffff',
 
   // icon colors
   iconBg: '#6466F1',
-
-  // Profile and UI specific colors
-  avatarBorder: '#6C727E',
-  cameraButton: '#DF1C59',
-  editIconColor: '#DF1C59',
-  menuItemIcon: '#384250',
-  menuItemChevron: '#9DA4AE',
-  menuItemSeparator: '#E2E4EB',
-  logoutCardBg: '#F7F8FE',
-  deleteButtonBorder: '#E5565C',
-  deleteButtonBg: '#FEF3F2',
-
-  // Dashboard card colors
-  cardLayerBase: '#7A1744',
-  cardLayerMiddle: '#B02050',
-  cardTextLight: '#e2e4eb',
-  cardTextLightest: '#f7f8fe',
-
-  // Searchbar colors
-  searchbarFocusBorder: '#DF1C59',
-  searchbarFocusShadow: '#FFE5ED',
-
-  // Radio button colors
-  radioButtonActive: '#DF1C59',
-  radioButtonBg: '#FFF0F5',
 };
 export const VibrantRedDarkThemeColors: AppColors = {
   backgrounds: {
@@ -909,54 +656,12 @@ export const VibrantRedDarkThemeColors: AppColors = {
   disabled: '#48484A',
   placeholder: '#8E8E93',
 
-  // Input specific colors
-  inputBackground: '#1E293B',
-  inputBorder: '#334155',
-  inputBorderHover: '#DF1C59',
-  inputBorderFocused: '#DF1C59',
-  inputBorderError: '#FF453A',
-  inputBackgroundDisabled: '#1E293B',
-  inputBackgroundReadOnly: '#1E293B',
-  inputBackgroundError: 'rgba(254, 202, 202, 0.20)',
-  inputShadowFocused: '#2E1827',
-  inputShadowHover: 'rgba(223, 28, 89, 0.20)',
-  inputText: '#F9FAFB',
-  inputTextPlaceholder: '#D1D5DB',
-  inputTextFilled: '#E5E7EB',
-  inputLabel: '#F9FAFB',
-
   // Tabs
   tabCardBg: '#22293B',
-  tabBorderColor: '#444D5B',
 
   // Form Fields
   formFieldBg: '#252B3B',
 
   // icon colors
   iconBg: '#6466F1',
-
-  // Profile and UI specific colors
-  avatarBorder: '#6B7280',
-  cameraButton: '#DF1C59',
-  editIconColor: '#C9CCD9',
-  menuItemIcon: '#E5E7EB',
-  menuItemChevron: '#9CA3AF',
-  menuItemSeparator: 'rgba(74, 84, 97, 0.6)',
-  logoutCardBg: '#22293B',
-  deleteButtonBorder: '#FF453A',
-  deleteButtonBg: '#4B1818',
-
-  // Dashboard card colors
-  cardLayerBase: '#5A1434',
-  cardLayerMiddle: '#9A1744',
-  cardTextLight: '#EBEBF5',
-  cardTextLightest: '#FFFFFF',
-
-  // Searchbar colors
-  searchbarFocusBorder: '#DF1C59',
-  searchbarFocusShadow: '#2E1827',
-
-  // Radio button colors
-  radioButtonActive: '#DF1C59',
-  radioButtonBg: '#2E1827',
 };
