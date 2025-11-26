@@ -470,9 +470,17 @@ jobs:
     name: build-and-release
     steps:
       - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: npm
+          node-version: '18'
       - name: Install dependencies
         run: npm ci
       - name: Install Ruby and Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
       - name: Install Fastlane
         run: |
           gem install fastlane
@@ -505,6 +513,11 @@ jobs:
       - name: Build and Release Android
         run: fastlane android qa_release
       - name: Upload Android Release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: '30'
       - name: Setup Apple API Key
         run: >
           base64_content=$(echo "$APP_STORE_CONNECT_API_KEY_BASE64" | sed
@@ -546,6 +559,9 @@ jobs:
 
           ssh-keyscan github.com >> ~/.ssh/known_hosts
       - name: Setup Xcode 16.1
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.1'
       - name: Setup Xcode First Launch and Install iOS 18.1 Runtime
         run: |-
           sudo xcodebuild -runFirstLaunch
@@ -595,7 +611,30 @@ jobs:
           security delete-keychain "${{ env.KEYCHAIN_NAME }}" 2>/dev/null ||
           true
       - name: Upload iOS Release IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-ipa
+          path: ios/build/smbmobile.ipa
+          retention-days: '30'
       - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            ## QA Release v${{ github.run_number }}
+            ### 📱 Build Artifacts
+            - **🍎 iOS IPA**: Download from Actions tab
+            ### 📋 Build Details
+            - **Commit**: ${{ github.sha }}
+            - **Branch**: ${{ github.ref_name }}
+            - **Build Number**: ${{ github.run_number }}
+            - **Xcode**: 16.1 with iOS 18.1 runtime
+            ### 🚀 Deployment
+            - iOS: TestFlight
+          name: QA Release v${{ github.run_number }}
+          draft: false
+          token: ${{ env.GITHUB_TOKEN }}
+          tag_name: qa-v${{ github.run_number }}
+          prerelease: true
       - name: 'Run :: Decoding Secrets'
         run: |2-
 
