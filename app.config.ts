@@ -62,7 +62,6 @@ export default {
         {
           ios: {
             useFrameworks: 'static',
-            deploymentTarget: '13.0',
           },
           android: {
             enableProguardInReleaseBuilds: true,
@@ -71,7 +70,6 @@ export default {
         },
       ],
       ['./plugins/withPlugin.ts'],
-      ['./plugins/withFirebaseXcode16Fix.ts'],
     ],
     experiments: {
       typedRoutes: true,
